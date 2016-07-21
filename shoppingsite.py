@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash, session
+from flask import Flask, render_template, redirect, flash, session, redirect, url_for
 import jinja2
 
 import melons
@@ -71,7 +71,16 @@ def shopping_cart():
     #   - keep track of the total amt of the entire order
     # - hand to the template the total order cost and the list of melon types
 
-    return render_template("cart.html")
+    melons_cart = session.get('melons_cart', [])
+
+    quantity = 0
+    
+    for melon in melons_cart:
+        print melons.melon_types.get(melon)
+
+
+
+    return render_template('cart.html')
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -88,14 +97,30 @@ def add_to_cart(id):
     #
     # - add the id of the melon they bought to the cart in the session
 
-    melons_cart = {}
-    name = "thing"
-    quantity = 1
-    price = 1
-    subtotal = 1
-    total = 100
-    melons_cart[id] = quantity, price, total
-    return render_template("cart.html", total=total, name=name, subtotal=subtotal, quantity=quantity, price=price)
+    melons_cart = session.get('melons_cart', [])
+
+    # checking our sesion to see if we have any keys, and we are setting it to melons_cart
+
+    # lst_in_session = session.get('melons_cart', [])
+
+    # for melons_types in melons_cart:
+    #     # if melons not in dictionary in session, we add to our melons_cart list
+    #     # if not lst_in_session:
+    
+    # if not melons_cart:
+    #     melons_cart.append(id)
+    # else:
+    #     # melons_cart = melons_cart +
+    melons_cart.append(id)
+
+    # every time we click add to cart, we append the id to melons_cart because we want to save the value
+
+    session['melons_cart'] = melons_cart
+    flash("Melon added to cart!")
+
+    # we are rebinding our melons_cart to key melons cart to the sesion dictionary
+
+    return redirect(url_for('shopping_cart'))
 
 
 @app.route("/login", methods=["GET"])
