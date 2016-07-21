@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import melons
@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 # Need to use Flask sessioning features
 
-app.secret_key = 'this-should-be-something-unguessable'
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 # Normally, if you refer to an undefined variable in a Jinja template,
 # Jinja silently ignores this. This makes debugging difficult, so we'll
@@ -50,7 +50,7 @@ def show_melon(melon_id):
     Show all info about a melon. Also, provide a button to buy that melon.
     """
 
-    melon = melons.get_by_id(59)
+    melon = melons.get_by_id(melon_id)
     print melon
     return render_template("melon_details.html",
                            display_melon=melon)
@@ -88,7 +88,14 @@ def add_to_cart(id):
     #
     # - add the id of the melon they bought to the cart in the session
 
-    return "Oops! This needs to be implemented!"
+    melons_cart = {}
+    name = "thing"
+    quantity = 1
+    price = 1
+    subtotal = 1
+    total = 100
+    melons_cart[id] = quantity, price, total
+    return render_template("cart.html", total=total, name=name, subtotal=subtotal, quantity=quantity, price=price)
 
 
 @app.route("/login", methods=["GET"])
@@ -107,6 +114,8 @@ def process_login():
     """
 
     # TODO: Need to implement this!
+    email = request.form.get['email']
+    password = request.form.get['password']
 
     return "Oops! This needs to be implemented"
 
